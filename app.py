@@ -31,20 +31,23 @@ def devLink(message, prefix):
     link = "https://athenacr.atlassian.net/browse/"+append
     link = "<"+link+"|"+append+"> "
     return link
-    
+
 
 # Response to new messages
 @slack_events_adapter.on("message")
 def handle_message(event_data):
+
     message = event_data["event"]
     # The text of the message is: message.get('text')
-    # Ensure bot does not respond to it's own messages      Bot User ID = U011AJZNY6M
-    if message.get("subtype") is None and message["user"]!="U011AJZNY6M":
+    # Ensure bot does not respond to it's own messages      Bot User ID = U011JNTNS6Q
+    if message.get("subtype") is None and message["user"]!="U011JNTNS6Q":
         channel = message["channel"]
         text=message.get('text')
         text=text.lower()
         jiraTicket=False
         response=""
+
+        print(message["user"])
 
         # JIRA ticket response
         # While loop handles multiple tickets in one message
