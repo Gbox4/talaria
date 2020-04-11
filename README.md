@@ -1,13 +1,5 @@
 # Talaria
 
-This bot depends on Slack's python API: https://github.com/slackapi/python-slack-events-api
+This is a bot that scans messages of any channel it is added to, and responds accordingly:
 
-How to setup a server to run the app:
-
-Clone, build, and install the the API repo, and create a virtualenv inside the api folder.
-
-You will need the slack signing secret and slack bot token, which I can send to you directly. Once you have them, you can add them to the $ENV/bin/activate file.
-
-Then, source $ENV/bin/activate.
-
-Finally, run my app.py with python.
+- If the JIRA ticket prefixes DEV- , PP- , SC- , or ASIAQNT- are conatined within the message, Talaria will respond with a link to the corresponding JIRA ticket. It does not matter what case the prefixes are in (dev- , DEV- , and dEv- will all work the same).
