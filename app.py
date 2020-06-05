@@ -58,13 +58,13 @@ def handleTickets(text):
             text = text[:text.index('dev-')]+"****"+text[text.index('dev-')+4:]
         elif ('pp-' in text):
             orderedTicketLinks[text.index('pp-')] = ticketLink(text, 'PP-')
-            text = text[:text.index('pp-')]+"***"text[text.index('pp-')+3:]
+            text = text[:text.index('pp-')]+"***"+text[text.index('pp-')+3:]
         elif ('sc-' in text):
             orderedTicketLinks[text.index('sc-')] = ticketLink(text, 'SC-')
-            text = text[:text.index('sc-')]+"***"text[text.index('sc-')+3:]
+            text = text[:text.index('sc-')]+"***"+text[text.index('sc-')+3:]
         elif ('asiaqnt-' in text):
             orderedTicketLinks[text.index('asiaqnt-')] = ticketLink(text, 'ASIAQNT-')
-            text = text[:text.index('asiaqnt-')]+"********"text[text.index('asiaqnt-')+8:]
+            text = text[:text.index('asiaqnt-')]+"********"+text[text.index('asiaqnt-')+8:]
         else:
             break
     
