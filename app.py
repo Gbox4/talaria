@@ -1,15 +1,31 @@
 from slackeventsapi import SlackEventAdapter
 from slackclient import SlackClient
+
 import os
 import sys
 
-# Our app's Slack Event Adapter for receiving actions via the Events API
+from flask import Flask
+
+# Assign environment variables
 slack_signing_secret = os.environ["SLACK_SIGNING_SECRET"]
-slack_events_adapter = SlackEventAdapter(slack_signing_secret, "/slack/events")
+slack_bot_token = os.environ["SLACK_BOT_TOKEN"]
+
 
 # Create a SlackClient for your bot to use for Web API requests
-slack_bot_token = os.environ["SLACK_BOT_TOKEN"]
 slack_client = SlackClient(slack_bot_token)
+
+
+
+# Create Flask app
+app = Flask(__name__)
+
+# Test route for Flask app
+@app.route("/")
+def hello():
+  return "Hello there!"
+
+slack_events_adapter = SlackEventAdapter(slack_signing_secret, "/slack/events", app)
+
 
 # Make URL from JIRA ticket
 def devLink(message, prefix):
@@ -82,6 +98,6 @@ def handle_message(event_data):
 def error_handler(err):
     print("ERROR: " + str(err))
 
-# Once we have our event listeners configured, we can start the
-# Flask server with the default `/events` endpoint on port 3000
-slack_events_adapter.start(port=3000)
+# Start flask server on port 3000
+if __name__ == "__main__":
+  app.run(host='0.0.0.0', port=3000)
