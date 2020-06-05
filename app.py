@@ -5,6 +5,7 @@ import os
 import sys
 
 from flask import Flask
+import collections
 
 # Assign environment variables
 slack_signing_secret = os.environ["SLACK_SIGNING_SECRET"]
@@ -50,25 +51,29 @@ def ticketLink(message, prefix):
 
 # Make list of prefixes in order they appear
 def handleTickets(text):
-    orderedTicketLinks = {}
+    ticketLinksIndexes = {}
     while True:
         if ('dev-' in text):
-            orderedTicketLinks[text.index('dev-')] = ticketLink(text, 'DEV-')
+            ticketLinksIndexes[text.index('dev-')] = ticketLink(text, 'DEV-')
             # This line replaces the first occurance of 'dev-' in the text with ****
             text = text[:text.index('dev-')]+"****"+text[text.index('dev-')+4:]
+            print(text)
         elif ('pp-' in text):
-            orderedTicketLinks[text.index('pp-')] = ticketLink(text, 'PP-')
+            ticketLinksIndexes[text.index('pp-')] = ticketLink(text, 'PP-')
             text = text[:text.index('pp-')]+"***"+text[text.index('pp-')+3:]
         elif ('sc-' in text):
-            orderedTicketLinks[text.index('sc-')] = ticketLink(text, 'SC-')
+            ticketLinksIndexes[text.index('sc-')] = ticketLink(text, 'SC-')
             text = text[:text.index('sc-')]+"***"+text[text.index('sc-')+3:]
         elif ('asiaqnt-' in text):
-            orderedTicketLinks[text.index('asiaqnt-')] = ticketLink(text, 'ASIAQNT-')
+            ticketLinksIndexes[text.index('asiaqnt-')] = ticketLink(text, 'ASIAQNT-')
             text = text[:text.index('asiaqnt-')]+"********"+text[text.index('asiaqnt-')+8:]
         else:
             break
-    
-    if len(orderedTicketLinks) > 0:
+    print ticketLinksIndexes
+
+    orderedTicketLinks = collections.OrderedDict(sorted(ticketLinksIndexes.items()))
+
+    if len(ticketLinksIndexes) > 0:
         response = ""
         for i in orderedTicketLinks:
             response += orderedTicketLinks[i]
