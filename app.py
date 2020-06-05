@@ -28,7 +28,7 @@ slack_events_adapter = SlackEventAdapter(slack_signing_secret, "/slack/events", 
 
 
 # Make URL from JIRA ticket
-def devLink(message, prefix):
+def ticketLink(message, prefix):
     nums = "1234567890"
     append = prefix
     
@@ -48,6 +48,34 @@ def devLink(message, prefix):
     link = "<"+link+"|"+append+"> "
     return link
 
+# Make list of prefixes in order they appear
+def handleTickets(text):
+    orderedTicketLinks = {}
+    while True:
+        if ('dev-' in text):
+            orderedTicketLinks[text.index('dev-')] = ticketLink(text, 'DEV-')
+            # This line removes the first occurance of 'dev-' in the text 
+            text = text[:text.index('dev-')]+text[text.index('dev-')+4:]
+        elif ('pp-' in text):
+            orderedTicketLinks[text.index('pp-')] = ticketLink(text, 'PP-')
+            text = text[:text.index('pp-')]+text[text.index('pp-')+3:]
+        elif ('sc-' in text):
+            orderedTicketLinks[text.index('sc-')] = ticketLink(text, 'SC-')
+            text = text[:text.index('sc-')]+text[text.index('sc-')+3:]
+        elif ('asiaqnt-' in text):
+            orderedTicketLinks[text.index('asiaqnt-')] = ticketLink(text, 'ASIAQNT-')
+            text = text[:text.index('asiaqnt-')]+text[text.index('asiaqnt-')+8:]
+        else:
+            break
+    
+    if len(orderedTicketLinks) > 0:
+        response = ""
+        for i in orderedTicketLinks:
+            response += orderedTicketLinks[i]
+
+        return response
+    else:
+        return False
 
 # Response to new messages
 @slack_events_adapter.on("message")
@@ -60,37 +88,15 @@ def handle_message(event_data):
         channel = message["channel"]
         text=message.get('text')
         text=text.lower()
-        jiraTicket=False
-        response=""
 
-        print(message["user"])
+
+        #print(message["user"])
 
         # JIRA ticket response
-        # While loop handles multiple tickets in one message
-        while True:
-            if ('dev-' in text):
-                response+=devLink(text, 'DEV-')
-                jiraTicket=True
-                # This line removes the first occurance of 'dev-' in the text 
-                text = text[:text.index('dev-')]+text[text.index('dev-')+4:]
-            elif ('pp-' in text):
-                response+=devLink(text, 'PP-')
-                jiraTicket=True
-                text = text[:text.index('pp-')]+text[text.index('pp-')+3:]
-            elif ('sc-' in text):
-                response+=devLink(text, 'SC-')
-                jiraTicket=True
-                text = text[:text.index('sc-')]+text[text.index('sc-')+3:]
-            elif ('asiaqnt-' in text):
-                response+=devLink(text, 'ASIAQNT-')
-                jiraTicket=True
-                text = text[:text.index('asiaqnt-')]+text[text.index('asiaqnt-')+8:]
-            else:
-                break
-        
+        jiraTicket = handleTickets(text)
 
         if jiraTicket:
-            message = response
+            message = jiraTicket
             slack_client.api_call("chat.postMessage", channel=channel, text=message,mrkdwn=False)
 
 # Error events
