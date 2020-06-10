@@ -100,9 +100,6 @@ def thank(user, channel):
 
     postMessageToChannel(channel, response)
 
-# !bruh
-def bruh(channel):
-    postMessageToChannel(channel, "https://i1.sndcdn.com/artworks-000522544380-zyzzt2-t500x500.jpg")
 
 # !help
 def help(channel, args):
@@ -148,9 +145,6 @@ def handleCommands(text, user, channel):
 
         if cmd == "thank" or cmd == "thanks":
             thank(user, channel)
-        
-        elif cmd == "bruh":
-            bruh(channel)
         
         elif cmd == "help":
             help(channel, args)
