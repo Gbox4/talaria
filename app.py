@@ -34,6 +34,10 @@ slack_events_adapter = SlackEventAdapter(slack_signing_secret, "/slack/events", 
 def postMessageToChannel(channel, response):
     slack_client.api_call("chat.postMessage", channel=channel, text=response,mrkdwn=False)
 
+# Calls "chat.postEphemeral"
+def postEphemeral(channel, user, response):
+    slack_client.api_call("chat.postEphemeral", channel=channel, text=response, user=user)
+
 # Calls API method "users.info"
 def userIdtoName(user):
     call = slack_client.api_call("users.info", user=user)
@@ -102,7 +106,7 @@ def thank(user, channel):
 
 
 # !help
-def help(channel, args):
+def help(channel, args, user):
     response = "Displaying help for "
     if len(args)==0:
         response += "general commands:\n\n"
@@ -117,7 +121,7 @@ def help(channel, args):
         }
         pass
 
-    postMessageToChannel(channel,response)
+    postEphemeral(channel, user, response)
 
 # TODO !mute
 
@@ -147,7 +151,7 @@ def handleCommands(text, user, channel):
             thank(user, channel)
         
         elif cmd == "help":
-            help(channel, args)
+            help(channel, args, user)
 
         elif cmd == "request":
             request(channel,user,text)
