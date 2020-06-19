@@ -63,7 +63,7 @@ def ticketLink(message, prefix):
     
     if not currenti==message.index(prefix.lower())+len(prefix):
         link = "https://athenacr.atlassian.net/browse/"+append
-        link = "<"+link+"|"+append+"> "
+        link = "<"+link+"|"+append+">, "
         return link
 
 # Responds to message with JIRA ticket links
@@ -94,7 +94,8 @@ def handleTickets(text, user, channel):
             if not orderedTicketLinks[i] in response:
                 response += orderedTicketLinks[i]
 
-        postMessageToChannel(channel, response)
+        # Truncate the string to cut off the final ", "
+        postMessageToChannel(channel, response[:-2])
 
 
 # !thanks
